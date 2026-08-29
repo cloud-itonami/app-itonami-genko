@@ -47,13 +47,11 @@
         io.github.kotoba-lang/kotobase-client
         {:git/url "https://github.com/kotoba-lang/kotobase-client.git"
          :git/sha "bbebe33d6888c915b64b32e5fc68720fac3aa97e"}
-        ;; datascript: in-memory Datalog query engine (kami.mangaka.genko-query,
-        ;; ADR-2607091900) — a LOCAL read-side query projection over genko doc/page
-        ;; EDN, NOT kotobase.net's server-side {:q :transact! :db :pull :entid}
-        ;; engine and NOT a new source of truth (doc EDN via read-doc/write-doc
-        ;; remains canonical; see genko_query.cljc docstring). Portable cljc/cljs
-        ;; lib (Maven-published, no npm counterpart needed for shadow-cljs).
-        datascript/datascript {:mvn/version "1.7.8"}}
+        ;; kotoba-lang/datalog — in-memory Datalog query engine for genko-query
+        ;; (ADR-2607091900 / ADR-2608260200 datascript substitution).
+        io.github.kotoba-lang/datalog
+        {:git/url "https://github.com/kotoba-lang/datalog.git"
+         :git/sha "76daf77bdd57d59b182ed053d2ddfb99b185c7e9"}}
 
  :aliases
  {;; Browser bridge: globalThis.KamiGenko を install する単一 JS を出す (reader と同型)。
