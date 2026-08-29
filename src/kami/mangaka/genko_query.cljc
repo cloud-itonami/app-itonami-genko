@@ -127,8 +127,8 @@
     (gq/nodes-by-agent db \"shonen\")         ; => #{…}
   "
   (:require [clojure.string :as str]
-            [datascript.core :as d]
-            [kami.mangaka.genko :as genko]))
+            [kami.mangaka.genko :as genko]
+            [kami.mangaka.genko-query-runtime :as d]))
 
 ;; ---------------------------------------------------------------------------
 ;; Schema (see namespace docstring for the reasoning behind each choice)

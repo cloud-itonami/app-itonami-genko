@@ -1,8 +1,8 @@
 (ns kami.mangaka.genko-query-test
   (:require [clojure.test :refer [deftest is testing]]
-            [datascript.core :as d]
             [kami.mangaka.genko :as g]
-            [kami.mangaka.genko-query :as gq]))
+            [kami.mangaka.genko-query :as gq]
+            [kami.mangaka.genko-query-runtime :as d]))
 
 ;; ── sample genko doc (2 pages) ───────────────────────────────────────────
 ;; page p1: panel n1 { fukidashi n2 { text n5 } , prompt n3 (agent "shonen")
@@ -93,8 +93,8 @@
                  (d/q '[:find ?nid
                         :where [?e :node/agent "shonen"]
                                [?e :node/nid ?nid]
-                               [?e :node/parent-nid ?p]
-                               [(contains? #{"n1" "n3"} ?p)]]
+                               (or [?e :node/parent-nid "n1"]
+                                   [?e :node/parent-nid "n3"])]
                       db)))))
   (testing "pass-through attribute survives verbatim: ai-image's :_genPrompt → :node/genPrompt"
     (is (= "a shonen hero"

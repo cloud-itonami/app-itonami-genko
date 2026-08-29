@@ -1,0 +1,232 @@
+(ns kami.mangaka.genko-query-runtime
+  "DataScript-shaped shim over `kotoba-lang/datalog` for genko-query.
+
+  Implements `create-conn`, `transact!`, `q`, and `entity` so
+  `kami.mangaka.genko-query` can project genko EDN without JVM DataScript."
+  (:require [clojure.edn :as edn]
+            [clojure.string :as str]
+            [datalog.core :as dl]
+            [datalog.index :as index]))
+
+(def ^:private unique-attrs
+  #{:node/nid :page/id})
+
+(defn- attr-name [k]
+  (if (keyword? k)
+    (if-let [ns* (namespace k)]
+      (str ns* "/" (name k))
+      (name k))
+    (str k)))
+
+(defn- keywordize-attr [s]
+  (if (str/includes? s "/")
+    (keyword (subs s 0 (str/index-of s "/")) (subs s (inc (str/index-of s "/"))))
+    (keyword s)))
+
+(defn- attr-value [v]
+  (cond
+    (keyword? v) (attr-name v)
+    (map? v) (pr-str v)
+    (or (vector? v) (seq? v) (set? v)) (pr-str v)
+    (nil? v) ""
+    :else v))
+
+(defn- lookup-key [attr val]
+  [(attr-name attr) (str val)])
+
+(defn- lookup-ref? [x]
+  (and (vector? x)
+       (= 2 (count x))
+       (keyword? (first x))))
+
+(defn- denorm-value [v]
+  (cond
+    (and (string? v) (re-matches #"^[^/]+/[^/]+$" v))
+    (keywordize-attr v)
+
+    (and (string? v) (str/starts-with? v "e")
+         (re-matches #"e\d+" v))
+    v
+
+    :else v))
+
+(defn- denorm-row [row]
+  (mapv denorm-value row))
+
+(defn- empty-store []
+  {:index (index/empty-db)
+   :entities {}
+   :lookup {}
+   :counter 0})
+
+(defn- resolve-lookup [store lookup-ref]
+  (when (lookup-ref? lookup-ref)
+    (get (:lookup store) (lookup-key (first lookup-ref) (second lookup-ref)))))
+
+(defn- entity-ref? [store o]
+  (contains? (:entities store) o))
+
+(defn- ref-pred [store]
+  (fn [o] (entity-ref? store o)))
+
+(defn- assert-attr [store subject attr value]
+  (if (lookup-ref? value)
+    (if-let [target (resolve-lookup store value)]
+      (update store :index
+              #(index/assert-quad %
+                                  {:s subject
+                                   :p (attr-name attr)
+                                   :o target}
+                                  (ref-pred store)))
+      store)
+    (update store :index
+            #(index/assert-quad %
+                                {:s subject
+                                 :p (attr-name attr)
+                                 :o (attr-value value)}
+                                (constantly false)))))
+
+(defn- subject-for-map [store entity-map]
+  (some (fn [attr]
+          (when-let [v (get entity-map attr)]
+            (get (:lookup store) (lookup-key attr v))))
+        unique-attrs))
+
+(defn- transact-entity! [store entity-map]
+  (let [subject (or (subject-for-map store entity-map)
+                      (str "e" (:counter store)))
+        store (if (subject-for-map store entity-map)
+                store
+                (update store :counter inc))
+        store (reduce
+               (fn [st attr]
+                 (if-let [v (get entity-map attr)]
+                   (assoc-in st [:lookup (lookup-key attr v)] subject)
+                   st))
+               store
+               unique-attrs)
+        store (update store :entities assoc subject entity-map)
+        store (reduce (fn [st [k v]]
+                        (if (contains? #{:db/id} k)
+                          st
+                          (assert-attr st subject k v)))
+                      store
+                      entity-map)]
+    store))
+
+(defn- transact-add! [store [_e attr v :as tx]]
+  (when (and (vector? tx) (= 4 (count tx)) (= (first tx) :db/add))
+    (let [e (nth tx 1)
+          attr (nth tx 2)
+          v (nth tx 3)]
+      (when-let [subject (resolve-lookup store e)]
+        (if (lookup-ref? v)
+          (when-let [target (resolve-lookup store v)]
+            (update store :index
+                    #(index/assert-quad %
+                                        {:s subject
+                                         :p (attr-name attr)
+                                         :o target}
+                                        (ref-pred store))))
+          (assert-attr store subject attr v))))))
+
+(defn create-conn
+  "DataScript-compatible conn atom. `schema` is accepted for API shape only."
+  [_schema]
+  (atom (empty-store)))
+
+(defn transact!
+  "Assert entity maps and/or `[:db/add …]` ref datoms into `conn`."
+  [conn tx-data]
+  (swap! conn
+         (fn [store]
+           (reduce (fn [st item]
+                     (cond
+                       (map? item) (transact-entity! st item)
+                       (vector? item) (or (transact-add! st item) st)
+                       :else st))
+                   store
+                   tx-data)))
+  nil)
+
+(defn entity
+  "Resolve a lookup ref `[:node/nid \"n1\"]` to its entity map."
+  [store lookup-ref]
+  (when-let [sid (resolve-lookup store lookup-ref)]
+    (get (:entities store) sid)))
+
+(defn- aggregate-form? [x]
+  (and (seq? x) (#{'count 'sum 'avg 'min 'max 'count-distinct} (first x))))
+
+(defn- parse-vector-query [query]
+  (let [qvec (if (string? query) (edn/read-string query) query)
+        idx-in (first (keep-indexed #(when (= %2 :in) %1) qvec))
+        idx-where (or (first (keep-indexed #(when (= %2 :where) %1) qvec)) -1)
+        find-end (or idx-in idx-where)
+        find-part (vec (remove #{'$ '.} (subvec qvec 1 find-end)))
+        scalar-dot? (some #{'.} (subvec qvec 1 find-end))
+        agg-forms (vec (filter aggregate-form? find-part))
+        plain-syms (vec (filter symbol? find-part))
+        dl-find (if (seq agg-forms)
+                  (into plain-syms agg-forms)
+                  find-part)
+        in-raw (when idx-in (vec (subvec qvec (inc idx-in) idx-where)))
+        in-syms (vec (remove #{'$} in-raw))
+        where-clauses (when (pos? idx-where) (vec (subvec qvec (inc idx-where))))]
+    {:find dl-find
+     :scalar-dot? scalar-dot?
+     :in in-syms
+     :where where-clauses}))
+
+(defn- norm-ground [x]
+  (cond
+    (symbol? x) x
+    (keyword? x) (attr-name x)
+    :else x))
+
+(defn- norm-clause [clause]
+  (cond
+    (and (seq? clause) (= 'or (first clause)))
+    (cons 'or (map norm-clause (rest clause)))
+
+    (and (seq? clause) (= 'not (first clause)) (vector? (second clause)))
+    (list 'not (mapv norm-ground (second clause)))
+
+    (and (seq? clause)
+         (symbol? (first clause))
+         (not (#{'not 'or 'or-join} (first clause)))
+         (not (vector? clause)))
+    (apply list (cons (first clause) (map norm-ground (rest clause))))
+
+    (vector? clause)
+    (mapv (fn [x]
+            (if (seq? x)
+              (apply list (map norm-ground x))
+              (norm-ground x)))
+          clause)
+
+    :else clause))
+
+(defn- project-rows [{:keys [scalar-dot?]} rows]
+  (cond
+    (and scalar-dot? (= 1 (count rows)))
+    (ffirst rows)
+
+    :else
+    (set rows)))
+
+(defn q
+  "Run a DataScript-shaped vector query. Argument order matches DataScript:
+  `(q query db & inputs)`."
+  [query store & inputs]
+  (let [parsed (parse-vector-query query)
+        {:keys [find in where]} parsed
+        _ (when (not= (count in) (count inputs))
+            (throw (ex-info "genko-query-runtime: :in arity mismatch"
+                            {:in in :inputs inputs})))
+        dl-query {:find find
+                  :in (when (seq in) in)
+                  :where (mapv norm-clause where)}
+        rows (mapv denorm-row
+                   (vec (dl/q (:index store) dl-query (constantly true) (vec inputs))))]
+    (project-rows parsed rows)))
