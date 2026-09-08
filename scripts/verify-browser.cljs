@@ -15,7 +15,7 @@
       npx nbb --classpath <cp> scripts/verify-browser.cljs"
   (:require ["node:process" :as process]
             ["playwright-core$default" :as pw]
-            [clojure.string :as str]
+            [kotoba.lang.text :as str]
             [promesa.core :as p]))
 
 ;; From the environment, not argv: `--classpath <cp>` shifts argv, and reading
