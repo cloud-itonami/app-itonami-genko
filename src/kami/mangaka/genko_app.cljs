@@ -15,7 +15,7 @@
   自動保存は引き続き localStorage(信頼性優先、
   ネットワーク往復をキー入力のたびに走らせない)。この kotobase 同期はこの
   standalone wrapper 側の持ち物で、genko-ui には入れない(host 差し込み)。"
-  (:require [clojure.string :as str]
+  (:require [kotoba.lang.text :as str]
             [reagent.dom :as rdom]
             [reagent.core :as r]
             [kami.mangaka.genko :as g]

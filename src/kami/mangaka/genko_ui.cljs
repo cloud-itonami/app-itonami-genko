@@ -55,7 +55,7 @@
   keyboard、export/import の副作用、そして view が出す `data-act` を action に
   戻す委譲リスナ (`attach-acts!`)。components 関数は view を reagent から
   deref するだけの薄い wrapper。"
-  (:require [clojure.string :as str]
+  (:require [kotoba.lang.text :as str]
             [reagent.core :as r]
             [reagent.ratom :as ratom]
             [kami.mangaka.genko :as g]
