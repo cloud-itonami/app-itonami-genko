@@ -2,7 +2,7 @@
   "Storyboard page + generated layer images -> editable Genko document.
   The flattened PNG is a preview only; background, every character, props,
   SFX, balloons and lettering remain independently addressable nodes."
-  (:require [clojure.string :as str]
+  (:require [kotoba.lang.text :as str]
             [kami.mangaka.genko :as g]))
 
 (defn- rect->world [[x y w h]]

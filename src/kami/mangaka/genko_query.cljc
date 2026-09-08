@@ -126,7 +126,7 @@
     (gq/children-of db \"n1\")                ; => #{\"n2\" \"n4\" \"n6\" …}
     (gq/nodes-by-agent db \"shonen\")         ; => #{…}
   "
-  (:require [clojure.string :as str]
+  (:require [kotoba.lang.text :as str]
             [kami.mangaka.genko :as genko]
             [kami.mangaka.genko-query-runtime :as d]))
 
