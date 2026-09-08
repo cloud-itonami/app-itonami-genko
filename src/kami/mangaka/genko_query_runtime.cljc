@@ -4,7 +4,7 @@
   Implements `create-conn`, `transact!`, `q`, and `entity` so
   `kami.mangaka.genko-query` can project genko EDN without JVM DataScript."
   (:require [clojure.edn :as edn]
-            [clojure.string :as str]
+            [kotoba.lang.text :as str]
             [datalog.core :as dl]
             [datalog.index :as index]))
 

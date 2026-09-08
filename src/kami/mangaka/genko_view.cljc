@@ -32,7 +32,7 @@
   per-node visibility toggle so it would not also select the row. With
   delegation the nearest `data-act` ancestor wins on its own, so the toggle
   never reaches the row's act and the special case disappears."
-  (:require [clojure.string :as str]
+  (:require [kotoba.lang.text :as str]
             [jp-go-dds.core :as dds]
             [kami.mangaka.genko :as g]
             [kami.mangaka.genko-render :as gr]

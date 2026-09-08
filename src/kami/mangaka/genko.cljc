@@ -20,7 +20,7 @@
   純データ/純関数のみ — babashka-safe / JVM・cljs・WASM 可搬。tone/fukidashi は
   kami.mangaka.expression の語彙を共有し、`page->storyboard` で kami.mangaka.text /
   analyzeExpression へ橋渡しする。Sibling of kami-mangaka-{text,expression}-clj。"
-  (:require [clojure.string :as str]
+  (:require [kotoba.lang.text :as str]
             #?(:clj [json.data-json :as json])))
 
 ;; ---------------------------------------------------------------------------
@@ -118,7 +118,7 @@
    "director" "#c0a020" "" "#888"})
 
 (defn agent-color [a] (get agent-colors a (agent-colors "")))
-(defn agent-initials [a] (let [s (str/upper-case (subs (str a) 0 (min 2 (count (str a)))))]
+(defn agent-initials [a] (let [s (str/upper (subs (str a) 0 (min 2 (count (str a)))))]
                            (if (str/blank? s) "" s)))
 
 ;; genko tone-pattern → kami.mangaka.expression の背景トーン語彙

@@ -3,7 +3,7 @@
   nothing on the JVM could load it. Making the views pure `.cljc` is what
   makes these assertions possible, so they are part of the same change."
   (:require [clojure.test :refer [deftest is testing]]
-            [clojure.string :as str]
+            [kotoba.lang.text :as str]
             [html.core :as html]
             [kami.mangaka.genko :as g]
             [kami.mangaka.genko-view :as view]))

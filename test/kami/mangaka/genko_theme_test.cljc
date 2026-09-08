@@ -3,7 +3,7 @@
   own published page and the mangaka studio Worker — so what has to hold is that
   declaring a catalog is the *only* difference between them."
   (:require [clojure.test :refer [deftest is testing]]
-            [clojure.string :as str]
+            [kotoba.lang.text :as str]
             [kami.mangaka.genko-theme :as theme]))
 
 (def ^:private stub-css

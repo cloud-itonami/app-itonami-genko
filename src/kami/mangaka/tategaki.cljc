@@ -10,7 +10,7 @@
    分担: **この ns は位置と回転フラグを返すだけ。実際にグリフを描くのは host。**
    `:writing-mode` 自体は genko-project が既に持っている語彙（\"vertical-rtl\" / \"horizontal\"）で、
    ここはその下位＝字の並べ方を担当する。"
-  (:require [clojure.string :as str]))
+  (:require [kotoba.lang.text :as str]))
 
 ;; ---------------------------------------------------------------------------
 ;; 言語 → 組み方向

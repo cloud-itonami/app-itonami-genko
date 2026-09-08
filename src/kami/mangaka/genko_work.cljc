@@ -21,7 +21,7 @@
 
   純 cljc・id は入力から決まる(乱数を使わない)。同じ work を 2 回開いても同じ doc に
   なるので、localStorage の doc と開き直した doc が node id で食い違わない。"
-  (:require [clojure.string :as str]
+  (:require [kotoba.lang.text :as str]
             [kami.mangaka.genko :as g]))
 
 (def b5-aspect
