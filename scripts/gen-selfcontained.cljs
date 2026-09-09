@@ -22,7 +22,7 @@
 (ns gen-selfcontained
   (:require ["node:fs" :as fs]
             ["node:path" :as path]
-            [clojure.string :as str]))
+            [kotoba.lang.text :as str]))
 
 (def page-path "public/index.html")
 (def bundle-path "public/js/genko-app.js")
