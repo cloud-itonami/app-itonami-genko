@@ -83,6 +83,44 @@ npm run test:kotobase        # kotoba-lang/kotobase-client(deps.edn git dep)経�
 npm run test:genko-query     # genko-query の JVM/cljs 両対応 portability check(node cljs.test)
 ```
 
+## 公開の形 —— 1 文書 = 1 CID（ADR-2609092600）
+
+**genko の identity は URL ではなく、文書そのもののアドレスである。**
+
+    nbb scripts/gen-selfcontained.cljs        # dist/genko.html を組む
+    nbb scripts/gen-selfcontained.cljs --check # commit 済みのそれは現行か
+
+`public/index.html` は bundle を相対パスで参照する。path で配るサイトにはそれが正しいが、
+content address としては誤りで —— **単体で取得して動かないアドレスは、アプリの半分の
+アドレスでしかない。** `gen-selfcontained.cljs` は bundle を inline して `dist/genko.html`
+を 1 ファイルにする。だから `ipfs://{cid}` が genko そのものになる（どの gateway でも、
+`file://` でも、オフラインでも動く）。
+
+決定論である: 同じ page + 同じ bundle は同じバイト列を出し、したがって同じ CID になる。
+入力を持っている者は誰でも同じアドレスを再導出できる —— これが「この機械がたまたま出した
+数字」との違い。
+
+`kotoba.app.edn` が 4 面を分けて持つ（**機械が書く。手でコメントを足しても publish で
+消える**）:
+
+| 面 | キー | 性質 |
+|---|---|---|
+| identity | `:kotoba.app/bundle-cid` | 不変。protocol |
+| link | `:kotoba.app/embed-url` | `ipfs://{cid}`。protocol |
+| naming | `:kotoba.app/latest` | 可変な版。protocol |
+| location | `:published` | どこが GET に答えたか。**protocol の外** |
+
+`dist/` と `public/js/` は `.gitignore` に在る。**content addressing の下では成果物を
+commit する必要が無い** —— manifest がアドレスを持ち、バイト列はそのアドレスに在る。
+
+初回公開（2026-09-09、commit f61a43d から）:
+
+- `bafkreiffmgvpdzs6aoidrznnvyn2yxts2smhr7ghryj2yurozdjqlv4qve`、633,269 bytes
+- PUT 201 → GET 200 → **送ったバイト列と返ったバイト列が一致**
+- 公開前に `dist/genko.html` を `file://` から実 Chrome で駆動し **18/18 PASS**
+  （WebGL2 コンテキスト live、delegated click、undo、ページ遷移、console error なし）。
+  **ビルドできたことは正しいことではない**ので、成果物を実行して値を確かめている。
+
 ## cljs-only genko エディタ (`kami.mangaka.genko-app`)
 
 `npx shadow-cljs release app` + `npm run page` → `public/index.html`。WebGL2 / reagent の全機能

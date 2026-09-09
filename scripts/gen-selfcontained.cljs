@@ -1,0 +1,87 @@
+#!/usr/bin/env nbb
+;; One document. `public/index.html` references the bundle by a relative path,
+;; which is right for a path-published site and wrong for a content address:
+;; an address that cannot be fetched and run on its own is an address for half
+;; an application. This inlines the bundle so `ipfs://{cid}` IS genko —
+;; on any gateway, from a file:// URL, offline (ADR-2609092600).
+;;
+;;   nbb scripts/gen-selfcontained.cljs           # write dist/genko.html
+;;   nbb scripts/gen-selfcontained.cljs --check   # is the committed one current?
+;;
+;; Deterministic: same page + same bundle produce the same bytes, so the same
+;; CID. That is what makes the address reproducible by anyone holding the
+;; inputs, rather than a number this machine happened to emit.
+;;
+;; Exit codes are three-valued, like every other check here: 0 answered yes,
+;; 1 answered no, 2 could not answer (an input missing, the anchor absent, the
+;; bundle unsafe to inline). Refusing to answer must never look like a pass.
+;;
+;; ⚠ Written in nbb, matching the five sibling scripts in this directory. New
+;; workspace tooling is meant to be kbb-first, but kbb is not on PATH here and
+;; a build step that cannot run is worse than one written in the local idiom.
+(ns gen-selfcontained
+  (:require ["node:fs" :as fs]
+            ["node:path" :as path]
+            [clojure.string :as str]))
+
+(def page-path "public/index.html")
+(def bundle-path "public/js/genko-app.js")
+(def out-path "dist/genko.html")
+
+(def anchor "<script src=\"js/genko-app.js\"></script>")
+
+(defn- die [code msg]
+  (println msg)
+  (js/process.exit code))
+
+(defn- occurrences
+  "How many times `sub` occurs in `s`. Counted, not matched — building a
+  regex out of a string full of quotes, dots and slashes is how this script
+  first refused to run against a page that contained the anchor exactly once."
+  [s sub]
+  (loop [from 0 n 0]
+    (if-let [i (str/index-of s sub from)]
+      (recur (+ i (count sub)) (inc n))
+      n)))
+
+(defn- read-text [p]
+  (when-not (.existsSync fs p)
+    (die 2 (str "UNANSWERED — missing input: " p
+                (when (= p bundle-path)
+                  "  (run: npx shadow-cljs release app)"))))
+  (.readFileSync fs p "utf8"))
+
+(defn build []
+  (let [page (read-text page-path)
+        bundle (read-text bundle-path)]
+    (when-not (= 1 (occurrences page anchor))
+      (die 2 (str "UNANSWERED — the script anchor occurs "
+                  (occurrences page anchor) " time(s) in " page-path ", expected 1"
+                  "\n  anchor: " anchor)))
+    ;; A `</script` anywhere in the bundle would close the inline element
+    ;; early and the rest of the application would be parsed as markup. The
+    ;; page would still load, and would be broken in a way no byte count
+    ;; shows, so this refuses rather than escaping and hoping.
+    (when (str/includes? bundle "</script")
+      (die 2 (str "UNANSWERED — the bundle contains `</script` and cannot be inlined verbatim")))
+    {:html (str/replace page anchor (str "<script>\n" bundle "\n</script>"))
+     :page-bytes (count page)
+     :bundle-bytes (count bundle)}))
+
+(defn -main [& args]
+  (let [check? (some #{"--check"} args)
+        {:keys [html page-bytes bundle-bytes]} (build)]
+    (if check?
+      (if (and (.existsSync fs out-path)
+               (= html (.readFileSync fs out-path "utf8")))
+        (println (str out-path " up to date (" (count html) " bytes)"))
+        (die 1 (str out-path " is stale or absent — run without --check")))
+      (do
+        (.mkdirSync fs (path/dirname out-path) #js {:recursive true})
+        (.writeFileSync fs out-path html)
+        (println (str "wrote " out-path
+                      "  page=" page-bytes
+                      " bundle=" bundle-bytes
+                      " total=" (count html)))))))
+
+(apply -main (vec *command-line-args*))
