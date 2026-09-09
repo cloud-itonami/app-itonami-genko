@@ -79,7 +79,7 @@
 
   :test {:extra-paths ["test"]
          :extra-deps  {io.github.cognitect-labs/test-runner
-                       {:git/tag "v0.5.1" :git/sha "dfb30dd"}
+                       {:git/tag "v0.5.1" :git/sha "dfb30dd6605cb6c0efc275e1df1736f6e90d4d73"}
                        ;; bridge test が page->storyboard → analyzeExpression 連携を確認するため、
                        ;; kami.mangaka.expression を test-only の git dep で取得 (runtime 依存ではない)。
                        ;; SSoT: kotoba-lang/kami-mangaka-expression (ADR-2607102200 addendum 13;
