@@ -9,10 +9,10 @@
   actually reaches dispatch! — that is exactly what changed, so that is what
   this checks, against the real DOM, the real bundle and the real listeners.
 
-  Run (after `shadow-cljs release app` and `nbb scripts/gen-page.cljs`, with
+  Run (after `shadow-cljs release app` and `nbb scripts/gen-page.cljk`, with
   public/ served):
     GENKO_URL=http://localhost:8734/ \\
-      npx nbb --classpath <cp> scripts/verify-browser.cljs"
+      npx nbb --classpath <cp> scripts/verify-browser.cljk"
   (:require ["node:process" :as process]
             ["playwright-core$default" :as pw]
             [kotoba.lang.text :as str]

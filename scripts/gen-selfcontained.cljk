@@ -5,8 +5,8 @@
 ;; an application. This inlines the bundle so `ipfs://{cid}` IS genko —
 ;; on any gateway, from a file:// URL, offline (ADR-2609092600).
 ;;
-;;   nbb scripts/gen-selfcontained.cljs           # write dist/genko.html
-;;   nbb scripts/gen-selfcontained.cljs --check   # is the committed one current?
+;;   nbb scripts/gen-selfcontained.cljk           # write dist/genko.html
+;;   nbb scripts/gen-selfcontained.cljk --check   # is the committed one current?
 ;;
 ;; Deterministic: same page + same bundle produce the same bytes, so the same
 ;; CID. That is what makes the address reproducible by anyone holding the

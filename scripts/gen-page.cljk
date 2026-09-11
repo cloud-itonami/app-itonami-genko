@@ -15,8 +15,8 @@
   That the SAME pure hiccup produces both is shitsuke's dual-render contract,
   and this script is what proves it outside a test.
 
-  Run:   nbb scripts/gen-page.cljs
-  Check: nbb scripts/gen-page.cljs --check   (exit 1 if the file is stale)"
+  Run:   nbb scripts/gen-page.cljk
+  Check: nbb scripts/gen-page.cljk --check   (exit 1 if the file is stale)"
   (:require ["node:fs" :as fs]
             ["node:process" :as process]
             [kami.mangaka.genko-theme :as theme]))
@@ -66,7 +66,7 @@
 
       check?
       (do (println (str "STALE: " out " differs from its generator.")
-                   "Run: nbb scripts/gen-page.cljs")
+                   "Run: nbb scripts/gen-page.cljk")
           (process/exit 1))
 
       :else
