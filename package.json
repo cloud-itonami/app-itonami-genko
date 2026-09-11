@@ -3,14 +3,14 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "build": "shadow-cljs release genko",
-    "test:kotobase": "shadow-cljs compile kotobase-test && node out/kotobase-tests.js",
-    "test:genko-query": "shadow-cljs compile genko-query-test && node out/genko-query-tests.js",
-    "task": "nbb scripts/run-task.cljk",
-    "tasks": "nbb scripts/run-task.cljk",
-    "page": "nbb --classpath \"$(clojure -Spath)\" scripts/gen-page.cljk",
-    "page:check": "nbb --classpath \"$(clojure -Spath)\" scripts/gen-page.cljk --check",
-    "verify:browser": "nbb --classpath \"$(clojure -Spath)\" scripts/verify-browser.cljk"
+    "build": "amu compile --target wasm32-browser genko",
+    "test:kotobase": "amu compile --target wasm32-browser kotobase-test && node out/kotobase-tests.js",
+    "test:genko-query": "amu compile --target wasm32-browser genko-query-test && node out/genko-query-tests.js",
+    "task": "kbb --backend sci scripts/run-task.cljk",
+    "tasks": "kbb --backend sci scripts/run-task.cljk",
+    "page": "kbb --backend sci --classpath \"$(kbb -Spath)\" scripts/gen-page.cljk",
+    "page:check": "kbb --backend sci --classpath \"$(kbb -Spath)\" scripts/gen-page.cljk --check",
+    "verify:browser": "kbb --backend sci --classpath \"$(kbb -Spath)\" scripts/verify-browser.cljk"
   },
   "devDependencies": {
     "shadow-cljs": "2.28.20"

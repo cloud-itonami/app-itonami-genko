@@ -10,7 +10,7 @@ permissions:
 
 jobs:
   test:
-    name: clojure -M:test (JDK ${{ matrix.java }})
+    name: kbb -M:test (JDK ${{ matrix.java }})
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
@@ -42,7 +42,7 @@ jobs:
             ${{ runner.os }}-jdk${{ matrix.java }}-clj-
 
       - name: Run tests
-        run: clojure -M:test
+        run: kbb -M:test
 
       - name: Lint (clj-kondo)
-        run: clojure -M:lint
+        run: kbb -M:lint
