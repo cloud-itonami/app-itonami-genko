@@ -78,7 +78,7 @@ verbatim round-trip。`nodeVisibleMap` は render loop 用の一括可視判定 
 ## テスト
 
 ```bash
-clojure -M:test              # model / node-tree / cycle / visibility / reorder / JSON round-trip / oplog replay / bridge / genko-query
+kbb -M:test              # model / node-tree / cycle / visibility / reorder / JSON round-trip / oplog replay / bridge / genko-query
 npm run test:kotobase        # kotoba-lang/kotobase-client(deps.edn git dep)経由の node cljs.test(下記)
 npm run test:genko-query     # genko-query の JVM/cljs 両対応 portability check(node cljs.test)
 ```
@@ -87,8 +87,8 @@ npm run test:genko-query     # genko-query の JVM/cljs 両対応 portability ch
 
 **genko の identity は URL ではなく、文書そのもののアドレスである。**
 
-    nbb scripts/gen-selfcontained.cljk        # dist/genko.html を組む
-    nbb scripts/gen-selfcontained.cljk --check # commit 済みのそれは現行か
+    kbb --backend sci scripts/gen-selfcontained.cljk        # dist/genko.html を組む
+    kbb --backend sci scripts/gen-selfcontained.cljk --check # commit 済みのそれは現行か
 
 `public/index.html` は bundle を相対パスで参照する。path で配るサイトにはそれが正しいが、
 content address としては誤りで —— **単体で取得して動かないアドレスは、アプリの半分の
@@ -123,7 +123,7 @@ commit する必要が無い** —— manifest がアドレスを持ち、バイ
 
 ## cljs-only genko エディタ (`kami.mangaka.genko-app`)
 
-`npx shadow-cljs release app` + `npm run page` → `public/index.html`。WebGL2 / reagent の全機能
+`amu compile --target wasm32-browser app` + `npm run page` → `public/index.html`。WebGL2 / reagent の全機能
 エディタ（ツール一式・コマ割りプリセット・pentab 筆圧・pan/zoom・node-tree）に加え、
 kotoba-server(kotobase.net) への永続を任意同期(「☁ save」/「☁ load」ボタン)として搭載。
 

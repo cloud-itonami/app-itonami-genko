@@ -1,12 +1,12 @@
-#!/usr/bin/env nbb
+#!/usr/bin/env kbb
 ;; One document. `public/index.html` references the bundle by a relative path,
 ;; which is right for a path-published site and wrong for a content address:
 ;; an address that cannot be fetched and run on its own is an address for half
 ;; an application. This inlines the bundle so `ipfs://{cid}` IS genko —
 ;; on any gateway, from a file:// URL, offline (ADR-2609092600).
 ;;
-;;   nbb scripts/gen-selfcontained.cljk           # write dist/genko.html
-;;   nbb scripts/gen-selfcontained.cljk --check   # is the committed one current?
+;;   kbb --backend sci scripts/gen-selfcontained.cljk           # write dist/genko.html
+;;   kbb --backend sci scripts/gen-selfcontained.cljk --check   # is the committed one current?
 ;;
 ;; Deterministic: same page + same bundle produce the same bytes, so the same
 ;; CID. That is what makes the address reproducible by anyone holding the
@@ -48,7 +48,7 @@
   (when-not (.existsSync fs p)
     (die 2 (str "UNANSWERED — missing input: " p
                 (when (= p bundle-path)
-                  "  (run: npx shadow-cljs release app)"))))
+                  "  (run: amu compile --target wasm32-browser app)"))))
   (.readFileSync fs p "utf8"))
 
 (defn build []

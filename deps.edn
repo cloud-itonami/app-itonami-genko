@@ -66,7 +66,7 @@
 
   ;; shadow-cljs :kotobase-test(:node-test) の classpath に cljs-test/ を足すだけの
   ;; alias。cljs 専用構文(cljs.test / npm require)の kotobase-client(git dep)
-  ;; smoke test を JVM の clojure -M:test(cognitect.test-runner, test/ を scan)
+  ;; smoke test を JVM の kbb -M:test(cognitect.test-runner, test/ を scan)
   ;; から隔離するため test/ とは別ディレクトリに置く。
   :cljs-test {:extra-paths ["cljs-test"]}
 

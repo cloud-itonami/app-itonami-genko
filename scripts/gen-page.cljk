@@ -15,8 +15,8 @@
   That the SAME pure hiccup produces both is shitsuke's dual-render contract,
   and this script is what proves it outside a test.
 
-  Run:   nbb scripts/gen-page.cljk
-  Check: nbb scripts/gen-page.cljk --check   (exit 1 if the file is stale)"
+  Run:   kbb --backend sci scripts/gen-page.cljk
+  Check: kbb --backend sci scripts/gen-page.cljk --check   (exit 1 if the file is stale)"
   (:require ["node:fs" :as fs]
             ["node:process" :as process]
             [kami.mangaka.genko-theme :as theme]))
@@ -46,7 +46,7 @@
 
 (defn- arg-after
   "`--flag value` → value, else nil. Not a general option parser on purpose:
-  this script takes two options and `nbb --classpath <cp>` has already put
+  this script takes two options and `kbb --backend sci --classpath <cp>` has already put
   things in argv that a general parser would have to know to ignore."
   [args flag]
   (second (drop-while #(not= flag %) args)))
@@ -66,7 +66,7 @@
 
       check?
       (do (println (str "STALE: " out " differs from its generator.")
-                   "Run: nbb scripts/gen-page.cljk")
+                   "Run: kbb --backend sci scripts/gen-page.cljk")
           (process/exit 1))
 
       :else
