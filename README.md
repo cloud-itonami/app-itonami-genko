@@ -87,8 +87,8 @@ npm run test:genko-query     # genko-query の JVM/cljs 両対応 portability ch
 
 **genko の identity は URL ではなく、文書そのもののアドレスである。**
 
-    nbb scripts/gen-selfcontained.cljs        # dist/genko.html を組む
-    nbb scripts/gen-selfcontained.cljs --check # commit 済みのそれは現行か
+    nbb scripts/gen-selfcontained.cljk        # dist/genko.html を組む
+    nbb scripts/gen-selfcontained.cljk --check # commit 済みのそれは現行か
 
 `public/index.html` は bundle を相対パスで参照する。path で配るサイトにはそれが正しいが、
 content address としては誤りで —— **単体で取得して動かないアドレスは、アプリの半分の

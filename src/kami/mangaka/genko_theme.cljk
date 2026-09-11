@@ -70,7 +70,7 @@
 (defn ->page-html
   "The standalone host page, as a complete HTML document string.
 
-  Lives in the library rather than in `scripts/gen-page.cljs` because there is
+  Lives in the library rather than in `scripts/gen-page.cljk` because there is
   more than one surface now: kami-genko's own published page (no catalog — the
   editor, as before) and the mangaka studio Worker (a catalog — the work list
   first). Those two must not drift, and the way to guarantee that is for both

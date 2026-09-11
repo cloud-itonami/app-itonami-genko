@@ -6,11 +6,11 @@
     "build": "shadow-cljs release genko",
     "test:kotobase": "shadow-cljs compile kotobase-test && node out/kotobase-tests.js",
     "test:genko-query": "shadow-cljs compile genko-query-test && node out/genko-query-tests.js",
-    "task": "nbb scripts/run-task.cljs",
-    "tasks": "nbb scripts/run-task.cljs",
-    "page": "nbb --classpath \"$(clojure -Spath)\" scripts/gen-page.cljs",
-    "page:check": "nbb --classpath \"$(clojure -Spath)\" scripts/gen-page.cljs --check",
-    "verify:browser": "nbb --classpath \"$(clojure -Spath)\" scripts/verify-browser.cljs"
+    "task": "nbb scripts/run-task.cljk",
+    "tasks": "nbb scripts/run-task.cljk",
+    "page": "nbb --classpath \"$(clojure -Spath)\" scripts/gen-page.cljk",
+    "page:check": "nbb --classpath \"$(clojure -Spath)\" scripts/gen-page.cljk --check",
+    "verify:browser": "nbb --classpath \"$(clojure -Spath)\" scripts/verify-browser.cljk"
   },
   "devDependencies": {
     "shadow-cljs": "2.28.20"
