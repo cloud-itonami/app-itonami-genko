@@ -4,7 +4,7 @@
   ここが押さえるのは『開けた』ではなく **『開いた結果が編集できる doc になっている』**
   —— つまり `g/normalize` を通り、`genko-render` が実際に image op を出し、
   `genko-project/doc->page` の入力に戻れること。screenshot は証拠にならない。"
-  (:require [clojure.test :refer [deftest is testing]]
+  (:require [kotoba.test :refer [deftest is testing]]
             [kami.mangaka.genko :as g]
             [kami.mangaka.genko-render :as gr]
             [kami.mangaka.genko-work :as w]))

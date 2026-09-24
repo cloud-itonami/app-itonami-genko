@@ -2,7 +2,7 @@
   "The host page. Two surfaces generate it from this one function — kami-genko's
   own published page and the mangaka studio Worker — so what has to hold is that
   declaring a catalog is the *only* difference between them."
-  (:require [clojure.test :refer [deftest is testing]]
+  (:require [kotoba.test :refer [deftest is testing]]
             [kotoba.lang.text :as str]
             [kami.mangaka.genko-theme :as theme]))
 

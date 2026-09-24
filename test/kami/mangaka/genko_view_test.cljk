@@ -2,7 +2,7 @@
   "The chrome had no test at all while it was reagent-with-inline-styles —
   nothing on the JVM could load it. Making the views pure `.cljc` is what
   makes these assertions possible, so they are part of the same change."
-  (:require [clojure.test :refer [deftest is testing]]
+  (:require [kotoba.test :refer [deftest is testing]]
             [kotoba.lang.text :as str]
             [html.core :as html]
             [kami.mangaka.genko :as g]
