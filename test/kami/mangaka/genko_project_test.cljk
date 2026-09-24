@@ -1,5 +1,5 @@
 (ns kami.mangaka.genko-project-test
-  (:require [clojure.test :refer [deftest is]]
+  (:require [kotoba.test :refer [deftest is]]
             [kami.mangaka.genko :as g]
             [kami.mangaka.genko-project :as project]))
 

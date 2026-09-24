@@ -1,5 +1,5 @@
 (ns kami.mangaka.genko-test
-  (:require [clojure.test :refer [deftest is testing]]
+  (:require [kotoba.test :refer [deftest is testing]]
             [kami.mangaka.genko :as g]
             [kami.mangaka.expression :as expr]))
 
