@@ -14,31 +14,45 @@
         ;; kotoba.lang.edn replaced clojure.edn here (2026-09-23). An explicit floor:
         ;; tools.deps takes the NEWEST sha it is shown, and kbb resolves git deps
         ;; only from nbb.edn, so every project file this repo has names it.
-        io.github.kotoba-lang/edn {:git/sha "79dba32c8892058842c57783f06a2dfe4601aeb0"}
+        io.github.kotoba-lang/edn
+        {:git/url "https://github.com/kotoba-lang/kotoba.git"
+         :git/sha "8c5b1bdafd70de1a36d2a6c3e1b71d415727225d"
+         :deps/root "lib/kotoba.edn"}
        ;; kotoba.test (clojure.test-compatible surface), not clojure.test --
         ;; scripts/migrate-clojure-test-to-kotoba-test.cljk. Explicit floor.
-        io.github.kotoba-lang/test {:git/url "https://github.com/kotoba-lang/test.git"
-                                    :git/sha "2ab4885f99fd25552d380d0f6b0b54c5a72eb7ae"}
+        io.github.kotoba-lang/test
+        {:git/url "https://github.com/kotoba-lang/kotoba.git"
+         :git/sha "8c5b1bdafd70de1a36d2a6c3e1b71d415727225d"
+         :deps/root "lib/kotoba.test"}
         ;; kotoba.lang.text, not clojure.string. Pinned as an explicit floor:
         ;; tools.deps takes the NEWEST sha it is shown, so without a floor here
         ;; this repo silently rides whatever a sibling happens to name.
-        io.github.kotoba-lang/text {:git/sha "73bdb13ae7a3d004b44bca08be03a3191157a38f"}
+        io.github.kotoba-lang/text
+        {:git/url "https://github.com/kotoba-lang/kotoba.git"
+         :git/sha "8c5b1bdafd70de1a36d2a6c3e1b71d415727225d"
+         :deps/root "lib/kotoba.text"}
        org.clojure/clojure   {:mvn/version "1.12.0"}
-        io.github.kotoba-lang/json {:git/sha "15fd195ac41e6268e2005ccbf6cb9924e81e65e2"}   ; clj: genko JSON doc の read/write
+        io.github.kotoba-lang/json
+        {:git/url "https://github.com/kotoba-lang/kotoba.git"
+         :git/sha "8c5b1bdafd70de1a36d2a6c3e1b71d415727225d"
+         :deps/root "lib/kotoba.json"}   ; clj: genko JSON doc の read/write
         ;; shitsuke の kotoba.editor (portable editor kernel: selection/undo/redo/nudge/align)。
         ;; KamiGenko.editor が全ドキュメント snapshot undo/redo に使う (ADR-2607020300 段階1)。zero-dep。
         ;; UI 層は DADS へ移ったが shitsuke は残る —— ここで使うのは
         ;; `kotoba.editor`(portable editor kernel)だけで、HIG skin ではない。
-        io.github.kotoba-lang/shitsuke {:git/url "https://github.com/kotoba-lang/shitsuke.git"
-                                        :git/sha "b6a605e3d031aef93b5783d47a1a7d9d27413d30"}
+        io.github.kotoba-lang/shitsuke
+        {:git/url "https://github.com/kotoba-lang/kotoba.git"
+         :git/sha "8c5b1bdafd70de1a36d2a6c3e1b71d415727225d"
+         :deps/root "lib/kotoba.shitsuke"}
         ;; jp-go-digital-design-system — デジタル庁デザインシステム(DADS)の
         ;; cljc hiccup 化。**このワークスペースの基本 design system**
         ;; (オーナー判断 2026-08-05: 実測で DADS 依存 170 repo / kotoba-ui 12 repo)。
         ;; `--hig-*` トークン契約は jp-go-dds.tokens/bridge-css が DADS primitive
         ;; の上に再定義するので、契約で書かれた app CSS は無改造で追従する。
         io.github.kotoba-lang/jp-go-digital-design-system
-        {:git/url "https://github.com/kotoba-lang/jp-go-digital-design-system.git"
-         :git/sha "cc8f4849af5def7ea535fd6c0b8a623ccca645e9"}
+        {:git/url "https://github.com/kotoba-lang/kotoba.git"
+         :git/sha "8c5b1bdafd70de1a36d2a6c3e1b71d415727225d"
+         :deps/root "lib/kotoba.jpGoDigitalDesignSystem"}
         ;; canvaskit: viewport 数学の正本 (UIScrollView semantics)。genko-render の
         ;; pan/zoom/world<->screen が委譲する (ADR-2607071130。旧 freeboard 移植コピーを差し戻し)。zero-dep。
         ;; murakumo.generation.image — 画像生成 gate の作法(host / 認証の有無 /
@@ -46,10 +60,13 @@
         ;; 共有クライアント。genko-app(host wrapper)だけが使う —— genko-view /
         ;; genko-ui はベンダを知らないまま。
         io.github.kotoba-lang/cloud-murakumo-generation
-        {:git/url "https://github.com/kotoba-lang/cloud-murakumo-generation.git"
-         :git/sha "4826c51f95d4a53b5c2272afe0b9900adefd5440"}
-        io.github.kotoba-lang/canvaskit {:git/url "https://github.com/kotoba-lang/canvaskit.git"
-                                         :git/sha "2e8ab2a996d5f405a9fd601e42993451c1f34874"}
+        {:git/url "https://github.com/kotoba-lang/kotoba.git"
+         :git/sha "8c5b1bdafd70de1a36d2a6c3e1b71d415727225d"
+         :deps/root "lib/kotoba.cloudMurakumoGeneration"}
+        io.github.kotoba-lang/canvaskit
+        {:git/url "https://github.com/kotoba-lang/kotoba.git"
+         :git/sha "8c5b1bdafd70de1a36d2a6c3e1b71d415727225d"
+         :deps/root "lib/kotoba.canvaskit"}
         ;; kotobase.{client,cacao,cid} — canonical kotobase.net datom-plane client
         ;; (q/datoms/pull/transact + CACAO auth + graph CID), consumed here instead
         ;; of a vendored copy under src/kotobase/ (that vendored copy predated the
@@ -58,13 +75,15 @@
         ;; deps of its own; npm deps (@noble/curves v1, @noble/hashes, @ipld/dag-cbor)
         ;; come from this repo's own package.json (already present).
         io.github.kotoba-lang/kotobase-client
-        {:git/url "https://github.com/kotoba-lang/kotobase-client.git"
-         :git/sha "bbebe33d6888c915b64b32e5fc68720fac3aa97e"}
+        {:git/url "https://github.com/kotoba-lang/kotoba.git"
+         :git/sha "8c5b1bdafd70de1a36d2a6c3e1b71d415727225d"
+         :deps/root "lib/kotoba.kotobaseClient"}
         ;; kotoba-lang/datalog — in-memory Datalog query engine for genko-query
         ;; (ADR-2607091900 / ADR-2608260200 datascript substitution).
         io.github.kotoba-lang/datalog
-        {:git/url "https://github.com/kotoba-lang/datalog.git"
-         :git/sha "76daf77bdd57d59b182ed053d2ddfb99b185c7e9"}}
+        {:git/url "https://github.com/kotoba-lang/kotoba.git"
+         :git/sha "8c5b1bdafd70de1a36d2a6c3e1b71d415727225d"
+         :deps/root "lib/kotoba.datalog"}}
 
  :aliases
  {;; Browser bridge: globalThis.KamiGenko を install する単一 JS を出す (reader と同型)。
@@ -93,8 +112,9 @@
                        ;; SSoT: kotoba-lang/kami-mangaka-expression (ADR-2607102200 addendum 13;
                        ;; nested kami-engine/kami-mangaka-expression-clj is a README shim only).
                        io.github.kotoba-lang/kami-mangaka-expression
-                       {:git/url "https://github.com/kotoba-lang/kami-mangaka-expression.git"
-                        :sha "1fe312c6cdeb0d6aef3c20403d8748f9d4244795"}}
+        {:git/url "https://github.com/kotoba-lang/kotoba.git"
+         :git/sha "8c5b1bdafd70de1a36d2a6c3e1b71d415727225d"
+         :deps/root "lib/kotoba.kamiMangakaExpression"}}
          :main-opts   ["-m" "cognitect.test-runner"]}
 
   ;; clj-kondo as a Clojars lib (no Homebrew/system install needed).
