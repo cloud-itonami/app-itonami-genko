@@ -22,4 +22,15 @@
         io.github.kotoba-lang/text
         {:git/url "https://github.com/kotoba-lang/kotoba.git"
          :git/sha "8c5b1bdafd70de1a36d2a6c3e1b71d415727225d"
-         :deps/root "lib/kotoba.text"}}}
+         :deps/root "lib/kotoba.text"}
+        ;; kami.mangaka.expression — test/ only (the page->storyboard ->
+        ;; analyzeExpression bridge test). deps.edn has it under :test; :paths
+        ;; here include "test", so it is declared here too. Pinned at the same
+        ;; sha as the other kotoba coordinates in this file (one sha per file:
+        ;; the kotoba libs reach each other via relative :local/root);
+        ;; lib/kotoba.kamiMangakaExpression is identical at this sha and at
+        ;; the 64ba9e2e that deps.edn :test names.
+        io.github.kotoba-lang/kami-mangaka-expression
+        {:git/url "https://github.com/kotoba-lang/kotoba.git"
+         :git/sha "8c5b1bdafd70de1a36d2a6c3e1b71d415727225d"
+         :deps/root "lib/kotoba.kamiMangakaExpression"}}}
